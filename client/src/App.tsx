@@ -1,10 +1,17 @@
 import React from 'react';
+import { Route, Routes, Link } from 'react-router-dom';
+import LandingPage from './pages/LandingPage';
 
 function App() {
   return (
-    <div className='w-full h-screen bg-yellow-500'>
-      Hello, world?
-    </div>
+    <>
+      <nav className="navbar">
+        
+      </nav>
+      <Routes>
+        <Route path='/' element={<LandingPage/>}/>
+      </Routes>
+    </>
   );
 }
 
