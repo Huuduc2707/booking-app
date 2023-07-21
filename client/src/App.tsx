@@ -3,15 +3,18 @@ import { Route, Routes, Link } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import EventBooking from './pages/EventBooking';
 import { Icon } from '@iconify/react';
+import { IconButton } from '@mui/material';
 import logo from './assets/logo.svg';
 import AddEventButton from './components/AddEventButton';
 
 function App() {
   return (
     <>
-      <nav className="navbar w-full h-[100px] bg-[#333333] flex justify-between items-center">
+      <nav className="navbar w-full h-[100px] bg-[#333333] flex justify-between items-center px-8">
         <Link to="/">
-          <Icon icon="material-symbols:home-rounded" className='w-[32px] h-[32px] text-green-500'/>
+          <IconButton>
+            <Icon icon="material-symbols:home-rounded" className='w-[32px] h-[32px] text-green-500'/>
+          </IconButton>
         </Link>
         <img src={logo} alt="" className='h-[64px]'/>
         <AddEventButton />

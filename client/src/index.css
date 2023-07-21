@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 
+
 .event-description>* {
   @apply grow basis-0 flex flex-col gap-2
 }
