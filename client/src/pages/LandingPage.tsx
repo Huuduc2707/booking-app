@@ -9,7 +9,7 @@ const LandingPage = () => {
       {eventList.map((event, index) => {
       return (
         <>
-          <Link to={`/events/${event.id}`}>
+          <Link className='h-fit' to={`/events/${event.id}`}>
             <EventCard key={index} id={event.id} name={event.name} date={event.date} image_url={event.image_url} price={event.price} state={event.state} location={event.location} category={event.category}/>
           </Link>
         </>
