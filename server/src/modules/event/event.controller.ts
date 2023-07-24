@@ -46,7 +46,7 @@ export class EventController {
   ) {
     const event = await this.eventService.GetEventDetails(eventId);
     const seats = await this.seatService.GetSeat(eventId);
-    const available = new Date().toDateString() >= event.date ? false : true;
+    const available = new Date() >= new Date(event.date) ? false : true;
     response
       .status(200)
       .json({ event: event, seats: seats, available: available });
