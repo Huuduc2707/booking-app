@@ -21,7 +21,7 @@ export default class BookingInfo {
   @IsNotEmpty()
   @IsString()
   @IsPhoneNumber('VN')
-  readonly phoneNumber;
+  readonly phone;
 
   @IsNotEmpty()
   @IsString()
