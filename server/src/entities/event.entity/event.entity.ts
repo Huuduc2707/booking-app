@@ -27,12 +27,14 @@ export default class Event {
   @ManyToMany(() => EventCategory, (eventCategory) => eventCategory.events)
   eventCategories: string[];
 
-  @OneToMany(() => Booking, (booking) => booking.event)
+  @OneToMany(() => Booking, (booking) => booking.event, { onDelete: 'CASCADE' })
   bookings: string[];
 
-  @OneToMany(() => Seat, (seat) => seat.event)
+  @OneToMany(() => Seat, (seat) => seat.event, { onDelete: 'CASCADE' })
   seats: string[];
 
-  @OneToMany(() => SeatType, (seatType) => seatType.event)
+  @OneToMany(() => SeatType, (seatType) => seatType.event, {
+    onDelete: 'CASCADE',
+  })
   seatTypes: string[];
 }

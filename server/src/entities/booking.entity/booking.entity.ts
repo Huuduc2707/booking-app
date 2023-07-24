@@ -19,9 +19,9 @@ export default class Booking {
   @Column()
   totalPayment: number;
 
-  @ManyToOne(() => Event, (event) => event.bookings, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Event, (event) => event.bookings)
   event: string;
 
-  @OneToMany(() => Seat, (seat) => seat.booking)
+  @OneToMany(() => Seat, (seat) => seat.booking, { onDelete: 'CASCADE' })
   seats: string[];
 }

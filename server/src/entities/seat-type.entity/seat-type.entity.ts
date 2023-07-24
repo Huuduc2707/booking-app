@@ -19,6 +19,6 @@ export default class SeatType {
   @ManyToOne(() => Event, (event) => event.seatTypes)
   event: string;
 
-  @OneToMany(() => Seat, (seat) => seat.seatType)
+  @OneToMany(() => Seat, (seat) => seat.seatType, { onDelete: 'CASCADE' })
   seats: string[];
 }
