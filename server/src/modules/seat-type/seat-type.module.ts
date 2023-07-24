@@ -4,6 +4,6 @@ import { SeatTypeController } from './seat-type.controller';
 
 @Module({
   providers: [SeatTypeService],
-  controllers: [SeatTypeController]
+  controllers: [SeatTypeController],
 })
 export class SeatTypeModule {}

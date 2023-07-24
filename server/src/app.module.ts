@@ -5,10 +5,23 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import TypeOrmConfig from './database/typeorm.config';
 import { TerminusModule } from '@nestjs/terminus';
 import { HealthController } from './database/health.controller';
+import { EventController } from './modules/event/event.controller';
+import { EventService } from './modules/event/event.service';
+import { SeatTypeService } from './modules/seat-type/seat-type.service';
+import { SeatService } from './modules/seat/seat.service';
+import Event from './entities/event.entity/event.entity';
+import EventCategory from './entities/event-category.entity/event-category.entity';
+import Booking from './entities/booking.entity/booking.entity';
+import Seat from './entities/seat.entity/seat.entity';
+import SeatType from './entities/seat-type.entity/seat-type.entity';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(TypeOrmConfig), TerminusModule],
-  controllers: [AppController, HealthController],
-  providers: [AppService],
+  imports: [
+    TypeOrmModule.forRoot(TypeOrmConfig),
+    TerminusModule,
+    TypeOrmModule.forFeature([Event, EventCategory, Booking, Seat, SeatType]),
+  ],
+  controllers: [AppController, HealthController, EventController],
+  providers: [AppService, EventService, SeatTypeService, SeatService],
 })
 export class AppModule {}
