@@ -6,13 +6,14 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import Select from 'react-select';
 import { Controller, useForm, SubmitHandler } from 'react-hook-form';
+import { placeholderCSS } from 'react-select/dist/declarations/src/components/Placeholder';
 
 interface FormData {
     eventName: string;
     liveDate: Date;
     eventLocation: string;
-    backdropImage: File | null;
-    categories: [{ label: string, value: string }];
+    backdropImage: string;
+    categories: { label: string, value: string }[];
     priceRange: { type: string, price: number }[];
 }
 
@@ -36,11 +37,22 @@ const AddEventButton = () => {
 
   const { register, control, handleSubmit } = useForm<FormData>({
     defaultValues: {
-        backdropImage: null
+        backdropImage: ''
     }
   })
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
+    fetch('http://localhost:8000/event/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            title: data.eventName,
+            date: data.liveDate.toLocaleDateString(),
+            image: data.backdropImage,
+            seatType: data.priceRange,
+            category: data.categories 
+        })
+    })
     console.log(data);
     setOpen(false);
     setPriceRange([{ type: '', price: 0}]);
@@ -79,7 +91,7 @@ const AddEventButton = () => {
                                 </Box>
                             )}
                         />
-                        <Controller 
+                        {/* <Controller 
                             name='backdropImage' 
                             control={control}
                             render={({field}) => (
@@ -88,7 +100,8 @@ const AddEventButton = () => {
                                     <MuiFileInput {...field}/>
                                 </Box>
                             )}
-                        />
+                        /> */}
+                        <TextField variant='standard' {...register("backdropImage")} placeholder="Image..."/>
                     </Box>
                     <Controller
                         name="categories"
