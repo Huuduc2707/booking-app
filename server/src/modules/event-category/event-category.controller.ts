@@ -10,7 +10,10 @@ export class EventCategoryController {
   GetCategoryList(@Res() response: Response) {
     this.eventCategoryService
       .GetCategoryList()
-      .then((res) => response.status(200).json(res))
+      .then((res) => {
+        if (res.length) response.status(200).json(res);
+        else response.status(404).json({ error: 'Empty category list' });
+      })
       .catch((err) => response.status(400).json(err));
   }
 }

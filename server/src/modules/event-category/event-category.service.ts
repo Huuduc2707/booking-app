@@ -11,11 +11,6 @@ export class EventCategoryService {
   ) {}
 
   async GetCategoryList() {
-    return new Promise((resolve, reject) => {
-      this.eventCategoryRepo
-        .find()
-        .then((res) => resolve(res))
-        .catch((err) => reject(err));
-    });
+    return await this.eventCategoryRepo.find();
   }
 }
