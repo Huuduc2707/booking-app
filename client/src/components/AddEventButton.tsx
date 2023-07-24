@@ -13,7 +13,7 @@ interface FormData {
     liveDate: Date;
     eventLocation: string;
     backdropImage: string;
-    categories: [{ label: string, value: string }];
+    categories: { label: string, value: string }[];
     priceRange: { type: string, price: number }[];
 }
 
@@ -42,6 +42,17 @@ const AddEventButton = () => {
   })
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
+    fetch('http://localhost:8000/event/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            title: data.eventName,
+            date: data.liveDate.toLocaleDateString(),
+            image: data.backdropImage,
+            seatType: data.priceRange,
+            category: data.categories 
+        })
+    })
     console.log(data);
     setOpen(false);
     setPriceRange([{ type: '', price: 0}]);
