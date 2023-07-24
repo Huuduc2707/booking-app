@@ -48,4 +48,10 @@ export class EventService {
       );
     });
   }
+
+  async SearchEvent(eventId: string) {
+    const res = await this.eventRepo.find({ where: { id: eventId } });
+    if (res.length) return res;
+    else return null;
+  }
 }
