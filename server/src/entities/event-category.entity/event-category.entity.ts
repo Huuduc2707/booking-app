@@ -10,5 +10,5 @@ export default class EventCategory {
   name: string;
 
   @ManyToMany(() => Event, (event) => event.eventCategories)
-  events: Event[];
+  events: string[];
 }
