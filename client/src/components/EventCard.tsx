@@ -3,7 +3,7 @@ import { Card, CardMedia, CardContent } from '@mui/material'
 import { Icon } from '@iconify/react'
 import { Event } from '../dummyData'
 
-const EventCard: React.FC<Event> = ({ id, name, date, image_url, price, state, location, category }) => {
+const EventCard: React.FC<Event> = ({ id, name, date, image_url, priceRange, location, category }) => {
   return (
     <>
         <Card className='w-[30%] max-w-[400px] min-w-[350px]'>
@@ -19,11 +19,14 @@ const EventCard: React.FC<Event> = ({ id, name, date, image_url, price, state, l
               <div className="event-description flex flex-wrap justify-between">
                 <div className="row-1">
                   <div className="event-price">
-                    From <span className='text-green-500 text-md font-bold'>{price} VND</span>
+                    From <span className='text-green-500 text-md font-bold'>{priceRange.reduce((minPrice, item) => {
+                      if (item.price < minPrice.price) return item
+                      else return minPrice
+                    }, priceRange[0])?.price} VND</span>
                   </div>
                   <div className="event-category flex items-center gap-1">
                     <Icon icon="material-symbols:calendar-view-month" className='text-slate-300'/>
-                    {category}
+                    {category.join('/')}
                   </div>
                 </div>
                 <div className="row-2 text-right">
