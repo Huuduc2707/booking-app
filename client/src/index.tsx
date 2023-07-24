@@ -4,6 +4,8 @@ import './index.css';
 import App from './App';
 import {BrowserRouter} from 'react-router-dom'
 import MUIThemeProvider from './components/ThemeProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -11,9 +13,11 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <MUIThemeProvider>
-        <App />
-      </MUIThemeProvider>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <MUIThemeProvider>
+          <App />
+        </MUIThemeProvider>
+      </LocalizationProvider>
     </BrowserRouter>
   </React.StrictMode>
 );
