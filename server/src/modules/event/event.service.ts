@@ -45,4 +45,16 @@ export class EventService {
       where: { id: eventId },
     });
   }
+
+  async GetEventList() {
+    const eventList = await this.eventRepo.find();
+    return new Promise((resolve) => {
+      resolve(
+        eventList.map((ele) => ({
+          ...ele,
+          available: new Date() >= new Date(ele.date) ? false : true,
+        })),
+      );
+    });
+  }
 }
