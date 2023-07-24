@@ -5,7 +5,7 @@ import {
   Body,
   Res,
   ValidationPipe,
-  Query,
+  Param,
 } from '@nestjs/common';
 import { EventService } from './event.service';
 import { SeatTypeService } from '../seat-type/seat-type.service';
@@ -39,9 +39,9 @@ export class EventController {
     }
   }
 
-  @Get('detail')
+  @Get('detail/:eventId')
   async GetEventDetails(
-    @Query('eventId') eventId: string,
+    @Param('eventId') eventId: string,
     @Res() response: Response,
   ) {
     const event = await this.eventService.GetEventDetails(eventId);
