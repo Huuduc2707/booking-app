@@ -36,3 +36,15 @@ export class ArrayLengthValidator implements ValidatorConstraintInterface {
     return `The array length must be between ${minLength} and ${maxLength}.`;
   }
 }
+
+@ValidatorConstraint({ name: 'isName', async: false })
+export class IsNameValidator implements ValidatorConstraintInterface {
+  validate(name: string) {
+    const regex =
+      /^([a-zA-ZÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]+\s?)+$/;
+    return regex.test(name);
+  }
+  defaultMessage() {
+    return `Not a valid name`;
+  }
+}
