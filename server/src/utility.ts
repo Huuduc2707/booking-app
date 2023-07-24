@@ -1,4 +1,9 @@
 import { v2 as cloudinary } from 'cloudinary';
+import {
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+  ValidationArguments,
+} from 'class-validator';
 
 cloudinary.config({
   cloud_name: 'deoifwvax',
@@ -16,4 +21,18 @@ export function IdGenerator(type: string): string {
     result += characters.charAt(randomIndex);
   }
   return result;
+}
+
+@ValidatorConstraint({ name: 'arrayLength', async: false })
+export class ArrayLengthValidator implements ValidatorConstraintInterface {
+  validate(array: any[], args: ValidationArguments) {
+    const minLength = args.constraints[0];
+    const maxLength = args.constraints[1];
+    return array.length >= minLength && array.length <= maxLength;
+  }
+  defaultMessage(args: ValidationArguments) {
+    const minLength = args.constraints[0];
+    const maxLength = args.constraints[1];
+    return `The array length must be between ${minLength} and ${maxLength}.`;
+  }
 }

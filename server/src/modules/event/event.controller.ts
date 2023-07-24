@@ -26,17 +26,13 @@ export class EventController {
     @Body(ValidationPipe) eventInfo: EventInfo,
     @Res() response: Response,
   ) {
-    const error = this.eventService.ValidateEvent(eventInfo);
-    if (error) response.status(400).json(error);
-    else {
-      const eventId = await this.eventService.AddEvent(eventInfo);
-      const seatTypeId = await this.seatTypeService.AddSeatType(
-        eventInfo,
-        eventId,
-      );
-      await this.seatService.AddSeat(eventInfo, eventId, seatTypeId);
-      response.status(201).json({ message: 'successful' });
-    }
+    const eventId = await this.eventService.AddEvent(eventInfo);
+    const seatTypeId = await this.seatTypeService.AddSeatType(
+      eventInfo,
+      eventId,
+    );
+    await this.seatService.AddSeat(eventInfo, eventId, seatTypeId);
+    response.status(201).json({ message: 'successful' });
   }
 
   @Get('detail/:eventId')

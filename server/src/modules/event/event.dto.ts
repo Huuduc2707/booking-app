@@ -7,11 +7,13 @@ import {
   ValidateNested,
   ArrayNotEmpty,
   Max,
+  Min,
+  Validate,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+import { ArrayLengthValidator } from '../../utility';
 
 class seatType {
-  @IsNotEmpty()
-  @IsString()
   id?: string;
 
   @IsNotEmpty()
@@ -24,11 +26,10 @@ class seatType {
 
   @IsNotEmpty()
   @IsNumber()
+  @Min(1)
   @Max(40)
   quantity: number;
 
-  @IsNotEmpty()
-  @IsString()
   event?: string;
 }
 
@@ -52,11 +53,13 @@ export default class EventInfo {
 
   @IsArray()
   @ArrayNotEmpty()
-  @ValidateNested()
+  @ValidateNested({ each: true })
+  @Type(() => seatType)
   readonly seatType: seatType[];
 
   @IsArray()
   @ArrayNotEmpty()
+  @Validate(ArrayLengthValidator, [1, 2])
   @IsNotEmpty({ each: true })
   @IsString({ each: true })
   readonly category: string[];

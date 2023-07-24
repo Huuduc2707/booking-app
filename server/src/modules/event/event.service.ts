@@ -12,15 +12,6 @@ export class EventService {
     private readonly eventRepo: Repository<Event>,
   ) {}
 
-  ValidateEvent(eventInfo: EventInfo) {
-    if (eventInfo.seatType.length > 3)
-      return { error: 'Maximum 3 types of seat' };
-    for (const ele of eventInfo.seatType) {
-      if (ele.quantity > 40)
-        return { error: 'Maximum quantity of seats for each type is 40' };
-    }
-  }
-
   async AddEvent(eventInfo: EventInfo) {
     const { title, date, location, image, seatType, category } = eventInfo;
     const minPrice = seatType.reduce((min, seatType) => {
