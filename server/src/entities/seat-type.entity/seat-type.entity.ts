@@ -13,9 +13,12 @@ export default class SeatType {
   @Column()
   price: number;
 
+  @Column()
+  quantity: number;
+
   @ManyToOne(() => Event, (event) => event.seatTypes)
-  event: Event;
+  event: string;
 
   @OneToMany(() => Seat, (seat) => seat.seatType)
-  seats: Seat[];
+  seats: string[];
 }

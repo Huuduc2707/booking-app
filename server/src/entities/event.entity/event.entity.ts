@@ -25,14 +25,14 @@ export default class Event {
   imageUrl: string;
 
   @ManyToMany(() => EventCategory, (eventCategory) => eventCategory.events)
-  eventCategories: EventCategory[];
+  eventCategories: string[];
 
   @OneToMany(() => Booking, (booking) => booking.event)
-  bookings: Booking[];
+  bookings: string[];
 
   @OneToMany(() => Seat, (seat) => seat.event)
-  seats: Seat[];
+  seats: string[];
 
   @OneToMany(() => SeatType, (seatType) => seatType.event)
-  seatTypes: SeatType[];
+  seatTypes: string[];
 }

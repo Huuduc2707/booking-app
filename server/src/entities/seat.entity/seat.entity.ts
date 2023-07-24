@@ -12,11 +12,11 @@ export default class Seat {
   status: string;
 
   @ManyToOne(() => Event, (event) => event.seats)
-  event: Event;
+  event: string;
 
   @ManyToOne(() => Booking, (booking) => booking.seats)
-  booking: Booking;
+  booking: string;
 
   @ManyToOne(() => SeatType, (seatType) => seatType.seats)
-  seatType: SeatType;
+  seatType: string;
 }

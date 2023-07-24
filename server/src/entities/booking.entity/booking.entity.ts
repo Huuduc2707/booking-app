@@ -20,8 +20,8 @@ export default class Booking {
   totalPayment: number;
 
   @ManyToOne(() => Event, (event) => event.bookings, { onDelete: 'CASCADE' })
-  event: Event;
+  event: string;
 
   @OneToMany(() => Seat, (seat) => seat.booking)
-  seats: Seat[];
+  seats: string[];
 }
