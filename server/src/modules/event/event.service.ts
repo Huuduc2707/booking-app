@@ -39,4 +39,10 @@ export class EventService {
     await this.eventRepo.save(newEvent);
     return eventId;
   }
+
+  GetEventDetails(eventId: string) {
+    return this.eventRepo.findOne({
+      where: { id: eventId },
+    });
+  }
 }

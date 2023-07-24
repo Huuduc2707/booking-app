@@ -31,4 +31,14 @@ export class SeatService {
     }
     await this.seatRepo.save(seats);
   }
+
+  GetSeat(eventId: string) {
+    return this.seatRepo
+      .createQueryBuilder('seat')
+      .select(['seat.id', 'seat.status', 'seatType.name', 'seatType.price'])
+      .leftJoin('seat.event', 'event')
+      .leftJoin('seat.seatType', 'seatType')
+      .where('event.id=:id', { id: eventId })
+      .getMany();
+  }
 }

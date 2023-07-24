@@ -1,4 +1,12 @@
-import { Controller, Put, Body, Res, ValidationPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Put,
+  Body,
+  Res,
+  ValidationPipe,
+  Query,
+} from '@nestjs/common';
 import { EventService } from './event.service';
 import { SeatTypeService } from '../seat-type/seat-type.service';
 import { SeatService } from '../seat/seat.service';
@@ -12,6 +20,7 @@ export class EventController {
     private readonly seatTypeService: SeatTypeService,
     private readonly seatService: SeatService,
   ) {}
+
   @Put('add')
   async AddEvent(
     @Body(ValidationPipe) eventInfo: EventInfo,
@@ -28,5 +37,18 @@ export class EventController {
       await this.seatService.AddSeat(eventInfo, eventId, seatTypeId);
       response.status(201).json({ message: 'successful' });
     }
+  }
+
+  @Get('detail')
+  async GetEventDetails(
+    @Query('eventId') eventId: string,
+    @Res() response: Response,
+  ) {
+    const event = await this.eventService.GetEventDetails(eventId);
+    const seats = await this.seatService.GetSeat(eventId);
+    const available = new Date().toDateString() >= event.date ? false : true;
+    response
+      .status(200)
+      .json({ event: event, seats: seats, available: available });
   }
 }
