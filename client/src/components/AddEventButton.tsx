@@ -14,7 +14,7 @@ interface FormData {
     eventLocation: string;
     backdropImage: string;
     categories: { label: string, value: string }[];
-    priceRange: { type: string, price: number }[];
+    priceRange: { name: string, price: number, quantity: number }[];
 }
 
 const AddEventButton = () => {
@@ -41,27 +41,32 @@ const AddEventButton = () => {
     }
   })
 
-  const onSubmit: SubmitHandler<FormData> = (data) => {
-    fetch('http://localhost:8000/event/add', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            title: data.eventName,
-            date: data.liveDate.toLocaleDateString(),
-            image: data.backdropImage,
-            seatType: data.priceRange,
-            category: data.categories 
-        })
-    })
-    console.log(data);
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
     setOpen(false);
     setPriceRange([{ type: '', price: 0}]);
+    const category = data.categories.map(item => item.value)
+    console.log(data, category);
+    return await fetch('http://localhost:8000/event/add', {
+        method: 'PUT',
+        headers: { 
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            title: data.eventName,
+            location: data.eventLocation,
+            date: data.liveDate,
+            image: data.backdropImage,
+            seatType: data.priceRange,
+            category: category 
+        })
+    })
   };
 
   const options = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' }
+    { value: 'live music', label: 'Live music' },
+    { value: 'conference', label: 'Conference' },
+    { value: 'theater', label: 'Theater' },
+    { value: 'seminar', label: 'Seminar' },
   ]
 
   return (
@@ -119,7 +124,7 @@ const AddEventButton = () => {
                             <>
                                 <div key={index} className='flex gap-2'>
                                     <Controller 
-                                        name={`priceRange.${index}.type`}
+                                        name={`priceRange.${index}.name`}
                                         control={control}
                                         render={({ field }) => (
                                             <TextField {...field} variant='standard' placeholder='Type'/>
@@ -130,6 +135,13 @@ const AddEventButton = () => {
                                         control={control}
                                         render={({ field }) => (
                                             <TextField {...field} variant='standard' placeholder='Price'/>
+                                        )}
+                                    />
+                                    <Controller 
+                                        name={`priceRange.${index}.quantity`}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <TextField {...field} variant='standard' placeholder='Quantity'/>
                                         )}
                                     />
                                     <IconButton onClick={() => {handleRemoveField(index)}}>
