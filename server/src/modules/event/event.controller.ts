@@ -57,4 +57,10 @@ export class EventController {
     if (res) response.status(200).json(res);
     else response.status(404).json({ error: 'Event not found' });
   }
+
+  @Get('summary')
+  async SummaryEvent(@Res() response: Response) {
+    const eventSummary = await this.eventService.SummaryEvent();
+    return response.status(200).json(eventSummary);
+  }
 }
