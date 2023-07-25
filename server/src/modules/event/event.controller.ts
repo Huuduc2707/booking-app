@@ -48,12 +48,12 @@ export class EventController {
       .json({ event: event, seats: seats, available: available });
   }
 
-  @Get('search/:eventId')
+  @Get('search/:eventName')
   async SearchEvent(
-    @Param('eventId') eventId: string,
+    @Param('eventName') eventName: string,
     @Res() response: Response,
   ) {
-    const res = await this.eventService.SearchEvent(eventId);
+    const res = await this.eventService.SearchEvent(eventName);
     if (res) response.status(200).json(res);
     else response.status(404).json({ error: 'Event not found' });
   }

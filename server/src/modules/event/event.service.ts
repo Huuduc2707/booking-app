@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import EventInfo from './event.dto';
 import Event from '../../entities/event.entity/event.entity';
 import * as util from '../../utility';
@@ -49,8 +49,10 @@ export class EventService {
     });
   }
 
-  async SearchEvent(eventId: string) {
-    const res = await this.eventRepo.find({ where: { id: eventId } });
+  async SearchEvent(eventName: string) {
+    const res = await this.eventRepo.find({
+      where: { title: Like(`%${eventName}%`) },
+    });
     if (res.length) return res;
     else return null;
   }
