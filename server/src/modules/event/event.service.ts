@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import EventInfo from './event.dto';
 import Event from '../../entities/event.entity/event.entity';
 import * as util from '../../utility';
@@ -49,9 +49,66 @@ export class EventService {
     });
   }
 
-  async SearchEvent(eventId: string) {
-    const res = await this.eventRepo.find({ where: { id: eventId } });
+  async SearchEvent(eventName: string) {
+    const res = await this.eventRepo.find({
+      where: { title: Like(`%${eventName}%`) },
+    });
     if (res.length) return res;
     else return null;
+  }
+
+  async GetEventNum() {
+    return await this.eventRepo.count();
+  }
+
+  async GetMostBookedEvents() {
+    return await this.eventRepo
+      .createQueryBuilder('event')
+      .select('event.*')
+      .addSelect('COUNT(booking.id)', 'bookingNum')
+      .addSelect('SUM(booking.totalPayment)', 'revenue')
+      .innerJoin('booking', 'booking', 'booking.eventId=event.id')
+      .groupBy('event.id')
+      .orderBy('bookingNum', 'DESC')
+      .limit(5)
+      .getRawMany();
+  }
+
+  async GetHighestRevenueEvents() {
+    return await this.eventRepo
+      .createQueryBuilder('event')
+      .select('event.*')
+      .addSelect('COUNT(booking.id)', 'bookingNum')
+      .addSelect('SUM(booking.totalPayment)', 'revenue')
+      .innerJoin('booking', 'booking', 'booking.eventId=event.id')
+      .groupBy('event.id')
+      .orderBy('revenue', 'DESC')
+      .limit(5)
+      .getRawMany();
+  }
+
+  async GetEventDetailList() {
+    return await this.eventRepo
+      .createQueryBuilder('event')
+      .select('event.*')
+      .addSelect('COUNT(booking.id)', 'bookingNum')
+      .addSelect('SUM(booking.totalPayment)', 'revenue')
+      .leftJoin('booking', 'booking', 'booking.eventId=event.id')
+      .groupBy('event.id')
+      .orderBy('event.title', 'ASC')
+      .getRawMany();
+  }
+
+  async SummaryEvent() {
+    const eventNum = await this.GetEventNum();
+    const mostBookedEvents = await this.GetMostBookedEvents();
+    const highestRevenueEvents = await this.GetHighestRevenueEvents();
+    const eventDetailList = await this.GetEventDetailList();
+    return {
+      evenNum: eventNum,
+      mostBooked: mostBookedEvents,
+      highestRevenue: highestRevenueEvents,
+      detail: eventDetailList,
+    };
   }
 }
