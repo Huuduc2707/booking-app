@@ -1,6 +1,7 @@
 import { Controller, Put, Body, Res, ValidationPipe } from '@nestjs/common';
 import { BookingService } from './booking.service';
 import { SeatService } from '../seat/seat.service';
+import { EmailService } from '../../utility';
 import BookingInfo from './booking.dto';
 import { Response } from 'express';
 
@@ -9,6 +10,7 @@ export class BookingController {
   constructor(
     private readonly bookingService: BookingService,
     private readonly seatService: SeatService,
+    private readonly emailService: EmailService,
   ) {}
 
   @Put('add')
@@ -19,6 +21,7 @@ export class BookingController {
     if (await this.seatService.CheckBookingStatus(bookingInfo)) {
       const bookingId = await this.bookingService.AddBooking(bookingInfo);
       await this.seatService.UpdateBookingStatus(bookingInfo, bookingId);
+      await this.emailService.sendEmail(bookingInfo, bookingId);
       response.status(200).json({ message: 'Successful' });
     } else response.status(400).json({ error: 'Invalid booking' });
   }

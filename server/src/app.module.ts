@@ -18,6 +18,7 @@ import EventCategory from './entities/event-category.entity/event-category.entit
 import Booking from './entities/booking.entity/booking.entity';
 import Seat from './entities/seat.entity/seat.entity';
 import SeatType from './entities/seat-type.entity/seat-type.entity';
+import { EmailService } from './utility';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import SeatType from './entities/seat-type.entity/seat-type.entity';
     SeatTypeService,
     SeatService,
     BookingService,
+    EmailService,
   ],
 })
 export class AppModule {}
