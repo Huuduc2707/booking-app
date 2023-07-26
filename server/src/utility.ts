@@ -4,6 +4,8 @@ import {
   ValidatorConstraintInterface,
   ValidationArguments,
 } from 'class-validator';
+import * as nodemailer from 'nodemailer';
+import BookingInfo from './modules/booking/booking.dto';
 
 cloudinary.config({
   cloud_name: 'deoifwvax',
@@ -46,5 +48,38 @@ export class IsNameValidator implements ValidatorConstraintInterface {
   }
   defaultMessage() {
     return `Not a valid name`;
+  }
+}
+
+export class EmailService {
+  private transporter: nodemailer.Transporter;
+  constructor() {
+    this.transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: 'huuduc2707@gmail.com',
+        pass: 'eibjehcgngyzcobt',
+      },
+    });
+  }
+
+  async sendEmail(bookingInfo: BookingInfo, bookingId: string): Promise<void> {
+    await this.transporter.sendMail({
+      from: 'huuduc2707@gmail.com',
+      to: bookingInfo.email,
+      subject: 'Booking detail',
+      text: `Hello from easyBooking,
+      We are sending this email to inform you about your booking detail:
+      Booking ID: ${bookingId},
+      Customer name: ${bookingInfo.fullName},
+      Phone number: ${bookingInfo.phone},
+      Event ID: ${bookingInfo.event},
+      Total payment: ${bookingInfo.totalPayment},
+      ${bookingInfo.seats.length > 1 ? 'Seats: ' : 'Seat: '}${
+        bookingInfo.seats
+      }`,
+    });
   }
 }
