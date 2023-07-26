@@ -12,7 +12,7 @@ interface FormData {
     eventName: string;
     liveDate: Date;
     eventLocation: string;
-    backdropImage: File | null;
+    backdropImage: string;
     categories: { label: string, value: string }[];
     priceRange: { name: string, price: number, quantity: number }[];
 }
@@ -37,7 +37,7 @@ const AddEventButton = () => {
 
   const { register, control, handleSubmit } = useForm<FormData>({
     defaultValues: {
-        backdropImage: null
+        backdropImage: ""
     }
   })
 
@@ -97,7 +97,7 @@ const AddEventButton = () => {
                                 </Box>
                             )}
                         />
-                        <Controller 
+                        {/* <Controller 
                             name='backdropImage' 
                             control={control}
                             render={({field}) => (
@@ -106,8 +106,8 @@ const AddEventButton = () => {
                                     <MuiFileInput {...field}/>
                                 </Box>
                             )}
-                        />
-                        {/* <TextField variant='standard' {...register("backdropImage")} placeholder="Image..."/> */}
+                        /> */}
+                        <TextField variant='standard' {...register("backdropImage")} placeholder="Image..."/>
                     </Box>
                     <Controller
                         name="categories"

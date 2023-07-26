@@ -7,3 +7,19 @@
 .event-description>* {
   @apply grow basis-0 flex flex-col gap-2
 }
+
+.color-code-0 {
+  @apply bg-[#99e4f5]
+}
+
+.color-code-1 {
+  @apply bg-[#FACC16]
+}
+
+.color-code-2 {
+  @apply bg-[#F9A8D4]
+}
+
+.color-code-3 {
+  @apply bg-[#b2b9f4]
+}
