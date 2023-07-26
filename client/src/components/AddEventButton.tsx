@@ -12,7 +12,7 @@ interface FormData {
     eventName: string;
     liveDate: Date;
     eventLocation: string;
-    backdropImage: string;
+    backdropImage: File | null;
     categories: { label: string, value: string }[];
     priceRange: { name: string, price: number, quantity: number }[];
 }
@@ -37,7 +37,7 @@ const AddEventButton = () => {
 
   const { register, control, handleSubmit } = useForm<FormData>({
     defaultValues: {
-        backdropImage: ''
+        backdropImage: null
     }
   })
 
@@ -45,6 +45,7 @@ const AddEventButton = () => {
     setOpen(false);
     setPriceRange([{ type: '', price: 0}]);
     const category = data.categories.map(item => item.value)
+    const priceRange = data.priceRange.map(item => {return { name: item.name, price: Number(item.price), quantity: Number(item.quantity) }})
     console.log(data, category);
     return await fetch('http://localhost:8000/event/add', {
         method: 'PUT',
@@ -56,7 +57,7 @@ const AddEventButton = () => {
             location: data.eventLocation,
             date: data.liveDate,
             image: data.backdropImage,
-            seatType: data.priceRange,
+            seatType: priceRange,
             category: category 
         })
     })
@@ -96,7 +97,7 @@ const AddEventButton = () => {
                                 </Box>
                             )}
                         />
-                        {/* <Controller 
+                        <Controller 
                             name='backdropImage' 
                             control={control}
                             render={({field}) => (
@@ -105,8 +106,8 @@ const AddEventButton = () => {
                                     <MuiFileInput {...field}/>
                                 </Box>
                             )}
-                        /> */}
-                        <TextField variant='standard' {...register("backdropImage")} placeholder="Image..."/>
+                        />
+                        {/* <TextField variant='standard' {...register("backdropImage")} placeholder="Image..."/> */}
                     </Box>
                     <Controller
                         name="categories"
@@ -134,14 +135,14 @@ const AddEventButton = () => {
                                         name={`priceRange.${index}.price`}
                                         control={control}
                                         render={({ field }) => (
-                                            <TextField {...field} variant='standard' placeholder='Price'/>
+                                            <TextField {...field} type='number' variant='standard' placeholder='Price'/>
                                         )}
                                     />
                                     <Controller 
                                         name={`priceRange.${index}.quantity`}
                                         control={control}
                                         render={({ field }) => (
-                                            <TextField {...field} variant='standard' placeholder='Quantity'/>
+                                            <TextField {...field} type='number' variant='standard' placeholder='Quantity'/>
                                         )}
                                     />
                                     <IconButton onClick={() => {handleRemoveField(index)}}>
