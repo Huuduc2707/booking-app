@@ -6,11 +6,12 @@ import {
 } from 'class-validator';
 import * as nodemailer from 'nodemailer';
 import BookingInfo from './modules/booking/booking.dto';
+import { EMAIL_CONFIG, CLOUDINARY_CONFIG } from './config';
 
 cloudinary.config({
-  cloud_name: 'deoifwvax',
-  api_key: '996692159189324',
-  api_secret: '6Q0rVEI-7eNwQGnqytlJHGKHmLw',
+  cloud_name: CLOUDINARY_CONFIG.CLOUDINARY_NAME,
+  api_key: CLOUDINARY_CONFIG.CLOUDINARY_API_KEY,
+  api_secret: CLOUDINARY_CONFIG.CLOUDINARY_API_SECRET,
 });
 
 export function IdGenerator(type: string): string {
@@ -55,19 +56,19 @@ export class EmailService {
   private transporter: nodemailer.Transporter;
   constructor() {
     this.transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 587,
-      secure: false,
+      host: EMAIL_CONFIG.EMAIL_HOST,
+      port: EMAIL_CONFIG.EMAIL_PORT,
+      secure: EMAIL_CONFIG.EMAIL_SECURE,
       auth: {
-        user: 'huuduc2707@gmail.com',
-        pass: 'eibjehcgngyzcobt',
+        user: EMAIL_CONFIG.EMAIL_USERNAME,
+        pass: EMAIL_CONFIG.EMAIL_PASSWORD,
       },
     });
   }
 
   async sendEmail(bookingInfo: BookingInfo, bookingId: string): Promise<void> {
     await this.transporter.sendMail({
-      from: 'huuduc2707@gmail.com',
+      from: EMAIL_CONFIG.EMAIL_USERNAME,
       to: bookingInfo.email,
       subject: 'Booking detail',
       text: `Hello from easyBooking,
