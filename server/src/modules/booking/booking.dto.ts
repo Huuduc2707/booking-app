@@ -1,7 +1,6 @@
 import {
   ArrayNotEmpty,
   IsArray,
-  IsDate,
   IsDateString,
   IsEmail,
   IsNotEmpty,
