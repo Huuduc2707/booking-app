@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
 import Event_Eventcategory from '../event_eventCategory.entity';
 
 @Entity()
@@ -9,7 +9,7 @@ export default class EventCategory {
   @Column()
   name: string;
 
-  @ManyToOne(
+  @OneToMany(
     () => Event_Eventcategory,
     (eventCategories) => eventCategories.category,
   )
