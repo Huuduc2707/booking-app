@@ -9,7 +9,7 @@ const EventBooking = () => {
 
   const [open, setOpen] = useState(false);
   const [thisEvent, setThisEvent] = useState<Event>();
-  const [seatList, setSeatList] = useState<Seat[]>([{ id: '', status: '', seatType: { name: '', price: 0 } }]);
+  const [seatList, setSeatList] = useState<Seat[]>([{ id: '', status: '', type: '', name: '', price: 0 }]);
   const [seatTypes, setSeatTypes] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSelected, setIsSelected] = useState<{ seatNumber: number, seatInfo: Seat }[]>([]);
@@ -26,20 +26,21 @@ const EventBooking = () => {
     const res = await fetch(`http://localhost:8000/event/detail/${id}`);
 
     const event = await res.json();
+    console.log(event)
     setThisEvent(event.event);
     setSeatList(event.seats);
   }
 
-  // useEffect(() => {
-  //   console.log(seatList);
-  // }, [seatList]);
+  useEffect(() => {
+    console.log(seatTypes);
+  }, [seatTypes]);
 
   useEffect(() => {
-    const seat_types = Array.from(new Set(seatList.map(item => item.seatType.name)));
+    const seat_types = Array.from(new Set(seatList.map(item => item.type)));
     setSeatTypes(seat_types);
     seatList?.sort((a: Seat, b: Seat) => {
-      const typeAIndex = seatTypes.indexOf(a.seatType.name);
-      const typeBIndex = seatTypes.indexOf(b.seatType.name);
+      const typeAIndex = seatTypes.indexOf(a.type);
+      const typeBIndex = seatTypes.indexOf(b.type);
 
       return typeAIndex - typeBIndex; 
     })
@@ -59,13 +60,13 @@ const EventBooking = () => {
             phone: phone,
             email: email,
             totalPayment: (isSelected?.reduce((total: number, currentValue) => {
-              return total + currentValue.seatInfo.seatType.price
+              return total + currentValue.seatInfo.price
             }, 0)),
             event: id,
             eventName: thisEvent?.title,
             eventDate: thisEvent?.date,
-            seats: (isSelected?.map(item => item.seatInfo.id)),
-            seatIds: (isSelected?.map(item => { return `S-${item.seatNumber}`})),
+            seatIds: (isSelected?.map(item => item.seatInfo.id)),
+            seats: (isSelected?.map(item => { return `S-${item.seatNumber}`})),
         })
     })
   }
@@ -105,7 +106,7 @@ const EventBooking = () => {
                 <div className={`border border-solid border-slate-500 w-[32px] h-[32px] color-code-${index}`} />
                 <div className='flex flex-col'>
                   <div className='font-semibold text-lg'>{item}</div>
-                  <div>{seatList?.find(ele => ele.seatType.name === item)?.seatType.price} VND</div>
+                  <div>{seatList?.find(ele => ele.type === item)?.price} VND</div>
                 </div>
                 <Icon className='w-[32px] h-[32px] text-zinc-500 absolute right-2' icon="mdi:information-variant-circle"/>
               </div>
@@ -121,7 +122,7 @@ const EventBooking = () => {
                     <>
                       <div className='flex flex-wrap px-7'>
                         {seatList.map((item, index) => {
-                          if (item.seatType.name === seatType) {
+                          if (item.type === seatType) {
                             return (
                               <>
                                 {item.status.toLowerCase() === "available" ? (
@@ -185,26 +186,26 @@ const EventBooking = () => {
             </div>
             {seatTypes?.map((item, index) => (
               <>                
-                {isSelected?.some(seat => seat.seatInfo.seatType.name === item) && (
+                {isSelected?.some(seat => seat.seatInfo.type === item) && (
                   <>
                     <div className='h-[1px] border border-slate-300 border-dashed my-4' />
                     <div className='text-black/50'>{item}</div>
                     <div className='flex justify-between text-black/50'>
-                      <div>{isSelected?.find(selectedItem => selectedItem.seatInfo.seatType.name === item)?.seatInfo.seatType.price} VND</div>
-                      <div>{isSelected?.filter(selectedItem => selectedItem.seatInfo.seatType.name === item).length}</div>
+                      <div>{isSelected?.find(selectedItem => selectedItem.seatInfo.type === item)?.seatInfo.price} VND</div>
+                      <div>{isSelected?.filter(selectedItem => selectedItem.seatInfo.type === item).length}</div>
                     </div>
                     <div className='flex justify-between text-black/50'>
                       <div className='flex gap-2 flex-wrap w-2/3'>
                       {isSelected?.map(selectedItem => (
                         <>
-                          {selectedItem.seatInfo.seatType.name === item && (
+                          {selectedItem.seatInfo.type === item && (
                             <div className='bg-yellow-200 py-1 px-2'>S-{selectedItem.seatNumber}</div>
                           )}
                         </>
                       ))}
                       </div>
                       <div className='text-black/50'>{isSelected?.reduce((total: number, currentValue) => {
-                        if (currentValue.seatInfo.seatType.name === item) return total + currentValue.seatInfo.seatType.price;
+                        if (currentValue.seatInfo.type === item) return total + currentValue.seatInfo.price;
                         return total
                       }, 0)} VND</div>
                     </div>
@@ -216,7 +217,7 @@ const EventBooking = () => {
           <div className='bg-[#666] text-slate-100 px-4 py-6 flex justify-between font-bold'>
             <div>Total</div>
             <div>{isSelected?.reduce((total: number, currentValue) => {
-              return total + currentValue.seatInfo.seatType.price
+              return total + currentValue.seatInfo.price
             }, 0)} VND</div>
           </div>
           <Button className='bg-transparent !mt-8 w-full' variant='contained' onClick={() => {setOpen(true)}}>Book</Button>
@@ -248,26 +249,26 @@ const EventBooking = () => {
                 </div>
                 {seatTypes?.map((item, index) => (
                   <>                
-                    {isSelected?.some(seat => seat.seatInfo.seatType.name === item) && (
+                    {isSelected?.some(seat => seat.seatInfo.type === item) && (
                       <>
                         <div className='h-[1px] border border-slate-300 border-dashed my-4' />
                         <div className='text-black/50'>{item}</div>
                         <div className='flex justify-between text-black/50'>
-                          <div>{isSelected?.find(selectedItem => selectedItem.seatInfo.seatType.name === item)?.seatInfo.seatType.price} VND</div>
-                          <div>{isSelected?.filter(selectedItem => selectedItem.seatInfo.seatType.name === item).length}</div>
+                          <div>{isSelected?.find(selectedItem => selectedItem.seatInfo.type === item)?.seatInfo.price} VND</div>
+                          <div>{isSelected?.filter(selectedItem => selectedItem.seatInfo.type === item).length}</div>
                         </div>
                         <div className='flex justify-between text-black/50'>
                           <div className='flex gap-2 flex-wrap w-2/3'>
                           {isSelected?.map(selectedItem => (
                             <>
-                              {selectedItem.seatInfo.seatType.name === item && (
+                              {selectedItem.seatInfo.type === item && (
                                 <div className='bg-yellow-200 py-1 px-2'>S-{selectedItem.seatNumber}</div>
                               )}
                             </>
                           ))}
                           </div>
                           <div className='text-black/50'>{isSelected?.reduce((total: number, currentValue) => {
-                            if (currentValue.seatInfo.seatType.name === item) return total + currentValue.seatInfo.seatType.price;
+                            if (currentValue.seatInfo.type === item) return total + currentValue.seatInfo.price;
                             return total
                           }, 0)} VND</div>
                         </div>
@@ -279,7 +280,7 @@ const EventBooking = () => {
               <div className='bg-[#666] text-slate-100 px-4 py-8 flex justify-between font-bold'>
                 <div>Total</div>
                 <div>{isSelected?.reduce((total: number, currentValue) => {
-                  return total + currentValue.seatInfo.seatType.price
+                  return total + currentValue.seatInfo.price
                 }, 0)} VND</div>
               </div>
             </div>

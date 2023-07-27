@@ -21,10 +21,9 @@ export interface EventSummary {
 export interface Seat {
     id: string;
     status: string;
-    seatType: {
-        name: string;
-        price: number;
-    }
+    type: string;
+    name: string;
+    price: number;
 }
 
 export interface Booking {

@@ -33,7 +33,6 @@ const AddEventButton = () => {
     const res = await fetch('http://localhost:8000/category')
 
     const result = await res.json();
-    console.log(result);
     setCategories(result);
   }
 
