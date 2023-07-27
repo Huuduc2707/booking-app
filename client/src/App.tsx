@@ -7,6 +7,7 @@ import { IconButton } from '@mui/material';
 import logo from './assets/logo.svg';
 import AddEventButton from './components/AddEventButton';
 import MyBookings from './pages/MyBookings';
+import Verification from './pages/Verification';
 
 function App() {
   return (
@@ -28,7 +29,8 @@ function App() {
         <AddEventButton />
       </nav>
       <Routes>
-        <Route path='/' element={<LandingPage/>}/>
+        <Route path='/' element={<Verification/>}/>
+        <Route path='/home' element={<LandingPage/>}/>
         <Route path='/events/:id' element={<EventBooking/>}/>
         <Route path='/mybookings' element={<MyBookings/>} />
       </Routes>
