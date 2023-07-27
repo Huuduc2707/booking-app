@@ -8,6 +8,9 @@ export default class Seat {
   @PrimaryColumn()
   id: string;
 
+  @Column({ nullable: true })
+  name: string;
+
   @Column()
   status: string;
 
