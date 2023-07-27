@@ -1,8 +1,13 @@
 import React from 'react'
+import { useParams } from 'react-router-dom'
 
 const MyBookings = () => {
+  const { mail } = useParams();
+
   return (
-    <div>MyBookings</div>
+    <div>
+      {mail}
+    </div>
   )
 }
 

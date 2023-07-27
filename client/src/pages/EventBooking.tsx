@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, FormEvent} from 'react'
 import { Button, Box, Modal, TextField } from '@mui/material'
-import { Seat, Event } from '../dummyData'
+import { Seat, Event } from '../interfaces'
 import { Icon } from '@iconify/react'
 import { useParams } from 'react-router-dom'
 
@@ -13,6 +13,10 @@ const EventBooking = () => {
   const [seatTypes, setSeatTypes] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSelected, setIsSelected] = useState<{ seatNumber: number, seatInfo: Seat }[]>([]);
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+
 
   useEffect(() => {
     getEventInfo();
@@ -42,6 +46,29 @@ const EventBooking = () => {
     if (seatTypes) setIsLoading(false);
   }, [seatList])
 
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const res = await fetch("http://localhost:8000/booking/add", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            fullName: fullName,
+            phone: phone,
+            email: email,
+            totalPayment: (isSelected?.reduce((total: number, currentValue) => {
+              return total + currentValue.seatInfo.seatType.price
+            }, 0)),
+            event: id,
+            eventName: thisEvent?.title,
+            eventDate: thisEvent?.date,
+            seats: (isSelected?.map(item => item.seatInfo.id)),
+            seatIds: (isSelected?.map(item => { return `S-${item.seatNumber}`})),
+        })
+    })
+  }
   // useEffect(() => {
   //   console.log(isSelected);
   // }, [isSelected])
@@ -140,143 +167,7 @@ const EventBooking = () => {
                       </div>
                     </>
                   ))}
-                  {/* {seatList?.map((item, index) => (
-                    <>
-                      {(item.seatType.name === seatTypes[0]) ? (
-                        <>
-                        {item.status === "available" ? (
-                          <>
-                            {isSelected?.some(ele => ele.seatInfo.id === item.id) ? (
-                              <div className='bg-blue-300 p-2'>
-                                <div className='h-[48px] w-[48px] rounded-lg border border-solid border-slate-700 bg-red-950 flex justify-center items-center text-slate-100 hover:cursor-pointer hover:opacity-75 hover:ease-in hover:delay-100' onClick={() => {
-                                  if (isSelected?.some(ele => ele.seatInfo.id === item.id)) {
-                                    setIsSelected(prevState => prevState.filter(ele => ele.seatInfo.id != item.id))
-                                  } else {
-                                    setIsSelected(prevState => [ ...prevState, { seatNumber: index + 1, seatInfo: item } ])
-                                  }
-                                }}>
-                                  {index + 1}
-                                </div>
-                              </div>
-                            ) : (
-                              <div className='bg-blue-300 p-2'>
-                                <div className='h-[48px] w-[48px] rounded-lg border border-solid border-slate-700 bg-slate-100 flex justify-center items-center hover:bg-red-950 hover:text-slate-100 hover:cursor-pointer hover:ease-in hover:delay-100' onClick={() => {
-                                  if (isSelected?.some(ele => ele.seatInfo.id === item.id)) {
-                                    setIsSelected(prevState => prevState.filter(ele => ele.seatInfo.id != item.id))
-                                  } else {
-                                    setIsSelected(prevState => [ ...prevState, { seatNumber: index + 1, seatInfo: item } ])
-                                  }
-                                }}>
-                                  {index + 1}
-                                </div>
-                              </div>
-                            )}
-                          </>
-                        ) : (
-                          <div className='bg-blue-300 p-2'>
-                            <div className='h-[48px] w-[48px] rounded-lg border border-solid border-slate-700 bg-neutral-500 flex justify-center items-center' onClick={() => {
-                              if (isSelected?.some(ele => ele.seatInfo.id === item.id)) {
-                                setIsSelected(prevState => prevState.filter(ele => ele.seatInfo.id != item.id))
-                              } else {
-                                setIsSelected(prevState => [ ...prevState, { seatNumber: index + 1, seatInfo: item } ])
-                              }
-                            }}>
-                              {index + 1}
-                            </div>
-                          </div>
-                        )}
-                      </>
-                      ) : (item.seatType.name === seatTypes[1]) ? (
-                        <>
-                          {item.status === "available" ? (
-                            <>
-                              {isSelected?.some(ele => ele.seatInfo.id === item.id) ? (
-                                <div className='bg-yellow-400 p-2'>
-                                  <div className='h-[48px] w-[48px] rounded-lg border border-solid border-slate-700 bg-red-950 flex justify-center items-center text-slate-100 hover:opacity-75 hover:cursor-pointer hover:ease-in hover:delay-100' onClick={() => {
-                                    if (isSelected?.some(ele => ele.seatInfo.id === item.id)) {
-                                      setIsSelected(prevState => prevState.filter(ele => ele.seatInfo.id != item.id))
-                                    } else {
-                                      setIsSelected(prevState => [ ...prevState, { seatNumber: index + 1, seatInfo: item } ])
-                                    }
-                                  }}>
-                                    {index + 1}
-                                  </div>
-                                </div>
-                              ) : (
-                                <div className='bg-yellow-400 p-2'>
-                                  <div className='h-[48px] w-[48px] rounded-lg border border-solid border-slate-700 bg-slate-100 flex justify-center items-center hover:bg-red-950 hover:text-slate-100 hover:cursor-pointer hover:ease-in hover:delay-100' onClick={() => {
-                                    if (isSelected?.some(ele => ele.seatInfo.id === item.id)) {
-                                      setIsSelected(prevState => prevState.filter(ele => ele.seatInfo.id != item.id))
-                                    } else {
-                                      setIsSelected(prevState => [ ...prevState, { seatNumber: index + 1, seatInfo: item } ])
-                                    }
-                                  }}>
-                                    {index + 1}
-                                  </div>
-                                </div>
-                              )}
-                            </>
-                          ) : (
-                            <div className='bg-yellow-400 p-2'>
-                              <div className='h-[48px] w-[48px] rounded-lg border border-solid border-slate-700 bg-neutral-500 flex justify-center items-center' onClick={() => {
-                                if (isSelected?.some(ele => ele.seatInfo.id === item.id)) {
-                                  setIsSelected(prevState => prevState.filter(ele => ele.seatInfo.id != item.id))
-                                } else {
-                                  setIsSelected(prevState => [ ...prevState, { seatNumber: index + 1, seatInfo: item } ])
-                                }
-                              }}>
-                                {index + 1}
-                              </div>
-                            </div>
-                          )}
-                        </>
-                        ) : (
-                          <>
-                          {item.status === "available" ? (
-                            <>
-                              {isSelected?.some(ele => ele.seatInfo.id === item.id) ? (
-                                <div className='bg-pink-300 p-2'>
-                                  <div className='h-[48px] w-[48px] rounded-lg border border-solid border-slate-700 bg-red-950 flex justify-center items-center text-slate-100 hover:opacity-75 hover:cursor-pointer hover:ease-in hover:delay-100' onClick={() => {
-                                    if (isSelected?.some(ele => ele.seatInfo.id === item.id)) {
-                                      setIsSelected(prevState => prevState.filter(ele => ele.seatInfo.id != item.id))
-                                    } else {
-                                      setIsSelected(prevState => [ ...prevState, { seatNumber: index + 1, seatInfo: item } ])
-                                    }
-                                  }}>
-                                    {index + 1}
-                                  </div>
-                                </div>
-                              ) : (
-                                <div className='bg-pink-300 p-2'>
-                                  <div className='h-[48px] w-[48px] rounded-lg border border-solid border-slate-700 bg-slate-100 flex justify-center items-center hover:bg-red-950 hover:text-slate-100 hover:cursor-pointer hover:ease-in hover:delay-100' onClick={() => {
-                                    if (isSelected?.some(ele => ele.seatInfo.id === item.id)) {
-                                      setIsSelected(prevState => prevState.filter(ele => ele.seatInfo.id != item.id))
-                                    } else {
-                                      setIsSelected(prevState => [ ...prevState, { seatNumber: index + 1, seatInfo: item } ])
-                                    }
-                                  }}>
-                                    {index + 1}
-                                  </div>
-                                </div>
-                              )}
-                            </>
-                          ) : (
-                            <div className='bg-pink-300 p-2'>
-                              <div className='h-[48px] w-[48px] rounded-lg border border-solid border-slate-700 bg-neutral-500 flex justify-center items-center' onClick={() => {
-                                if (isSelected?.some(ele => ele.seatInfo.id === item.id)) {
-                                  setIsSelected(prevState => prevState.filter(ele => ele.seatInfo.id != item.id))
-                                } else {
-                                  setIsSelected(prevState => [ ...prevState, { seatNumber: index + 1, seatInfo: item } ])
-                                }
-                              }}>
-                                {index + 1}
-                              </div>
-                            </div>
-                          )}
-                        </>
-                      )}
-                    </>
-                  ))} */}
+                  
                 </> 
               )}
             </div>
@@ -336,13 +227,13 @@ const EventBooking = () => {
         onClose={() => {setOpen(false)}}
       >
         <Box className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-[1000px] h-[fit] shadow-md bg-white flex p-10 border-solid border-black border-[1px] rounded-sm space-y-[3rem] overflow-scroll">
-            <form action="" className='px-4 w-1/2' onSubmit={() => {}}>
+            <form action="" className='px-4 w-1/2' onSubmit={handleSubmit}>
               <Box className="flex flex-col py-6 px-6 gap-6 border border-solid border-slate-200">
                 <div className='text-2xl font-semibold'>Fill your information</div>
-                <TextField name='fullName' variant='standard' placeholder='Full name'/>
-                <TextField name='phone' variant='standard' placeholder='Phone number'/>
-                <TextField name='email' variant='standard' placeholder='Email'/>
-                <Button variant='contained' className='!mt-6 self-end'>Confirm</Button>
+                <TextField onChange={(e) => {setFullName(e.target.value)}} name='fullName' variant='standard' placeholder='Full name'/>
+                <TextField onChange={(e) => {setPhone(e.target.value)}} name='phone' variant='standard' placeholder='Phone number'/>
+                <TextField onChange={(e) => {setEmail(e.target.value)}} name='email' variant='standard' placeholder='Email'/>
+                <Button variant='contained' className='!mt-6 self-end' type='submit'>Confirm</Button>
               </Box>
             </form>
             <div className='payment-info w-[520px] h-fit !m-0 border border-dashed border-slate-300'>

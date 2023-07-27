@@ -1,7 +1,7 @@
 import React from 'react'
 import { Card, CardMedia, CardContent } from '@mui/material'
 import { Icon } from '@iconify/react'
-import { Event } from '../dummyData'
+import { Event } from '../interfaces'
 
 const EventCard: React.FC<Event> = ({ id, title, date, imageUrl, price, location, category, bookingNum, revenue }) => {
   const liveDate = new Date(date);
@@ -28,8 +28,7 @@ const EventCard: React.FC<Event> = ({ id, title, date, imageUrl, price, location
                     }, priceRange[0])?.price} VND</span> */}
                   </div>
                   <div className="event-category flex items-center gap-1">
-                    <Icon icon="material-symbols:calendar-view-month" className='text-slate-300'/>
-                    {category?.join('/')}
+                    {category.map((item) => (<><div className='bg-green-300 px-2 py-1 text-sm'>{item.name}</div></>))}
                   </div>
                 </div>
                 <div className="row-2 text-right">

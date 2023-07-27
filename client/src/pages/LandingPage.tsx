@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import EventCard from '../components/EventCard'
 import { Link } from 'react-router-dom'
-import { Event, EventSummary } from '../dummyData'
+import { Event, EventSummary } from '../interfaces'
 import { Icon } from '@iconify/react'
-import { TextField, Pagination } from '@mui/material'
+import { TextField, Pagination, IconButton } from '@mui/material'
 // import { eventList } from '../dummyData'
 
 const LandingPage = () => {
@@ -19,7 +19,7 @@ const LandingPage = () => {
   }, [])
 
   useEffect(() => {
-    setFilteredEventList(eventList.filter(event => (event.title.toLowerCase().includes(searchValue.toLowerCase()) || event.location.toLowerCase().includes(searchValue.toLowerCase()) || event.category?.some(item => item.toLowerCase().includes(searchValue.toLowerCase())))))
+    setFilteredEventList(eventList.filter(event => (event.title.toLowerCase().includes(searchValue.toLowerCase()) || event.location.toLowerCase().includes(searchValue.toLowerCase()) || event.category?.some(item => item.name.toLowerCase().includes(searchValue.toLowerCase())))))
   }, [eventList, searchValue]);
 
   useEffect(() => {
