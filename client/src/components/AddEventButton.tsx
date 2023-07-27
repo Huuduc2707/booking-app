@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from 'react'
+import React, { useState, FormEvent, useEffect } from 'react'
 import { Box, Button, Modal, TextField, InputLabel, IconButton, MenuItem, FormControl } from '@mui/material';
 import {Icon} from '@iconify/react'
 import { MuiFileInput } from 'mui-file-input';
@@ -20,10 +20,22 @@ interface FormData {
 const AddEventButton = () => {
   const [open, setOpen] = useState(false);
   const [priceRange, setPriceRange] = useState([{ type: '', price: 0}])
+  const [categories, setCategories] = useState<{ id: string, name: string }[]>([])
 
 //   const handleChange = (index: number, event: FormEvent<HTMLFormElement>) => {
 //     const { name, value } = event.target;
 //   }
+  useEffect(() => {
+    getCategories();
+  }, [])
+
+  async function getCategories(){
+    const res = await fetch('http://localhost:8000/category')
+
+    const result = await res.json();
+    console.log(result);
+    setCategories(result);
+  }
 
   function handleAddField() {
     setPriceRange([...priceRange, { type: '', price: 0}]);
@@ -44,9 +56,9 @@ const AddEventButton = () => {
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     setOpen(false);
     setPriceRange([{ type: '', price: 0}]);
-    const category = data.categories.map(item => item.value)
+    const category = data.categories.map(item => categories.find(ele => ele.name === item.value)?.id)
     const priceRange = data.priceRange.map(item => {return { name: item.name, price: Number(item.price), quantity: Number(item.quantity) }})
-    console.log(data, category);
+    console.log(category);
     return await fetch('http://localhost:8000/event/add', {
         method: 'PUT',
         headers: { 
