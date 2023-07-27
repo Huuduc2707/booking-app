@@ -13,4 +13,17 @@ export class EventCategoryService {
   async GetCategoryList() {
     return await this.eventCategoryRepo.find();
   }
+
+  async GetCategoryListForEvent(eventId: string) {
+    return this.eventCategoryRepo
+      .createQueryBuilder('eventCategory')
+      .select('eventCategory.*')
+      .innerJoin(
+        'event_eventcategory',
+        'event_eventcategory',
+        'event_eventcategory.categoryId=eventCategory.id',
+      )
+      .where('event_eventcategory.eventId=:eventId', { eventId: eventId })
+      .getRawMany();
+  }
 }

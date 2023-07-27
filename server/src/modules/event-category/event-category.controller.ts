@@ -7,7 +7,7 @@ export class EventCategoryController {
   constructor(private readonly eventCategoryService: EventCategoryService) {}
 
   @Get()
-  GetCategoryList(@Res() response: Response) {
+  async GetCategoryList(@Res() response: Response) {
     this.eventCategoryService
       .GetCategoryList()
       .then((res) => {
