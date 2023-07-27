@@ -16,7 +16,12 @@ export class BookingService {
     const bookingId = util.IdGenerator('B');
     const booking = this.bookingRepo.create({
       id: bookingId,
-      ...bookingInfo,
+      fullName: bookingInfo.fullName,
+      phone: bookingInfo.phone,
+      email: bookingInfo.email,
+      totalPayment: bookingInfo.totalPayment,
+      event: bookingInfo.event,
+      seats: bookingInfo.seatIds,
     });
     await this.bookingRepo.save(booking);
     return bookingId;

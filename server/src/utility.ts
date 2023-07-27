@@ -76,7 +76,8 @@ export class EmailService {
       Booking ID: ${bookingId},
       Customer name: ${bookingInfo.fullName},
       Phone number: ${bookingInfo.phone},
-      Event ID: ${bookingInfo.event},
+      Event: ${bookingInfo.eventName},
+      Date: ${bookingInfo.eventDate},
       Total payment: ${bookingInfo.totalPayment},
       ${bookingInfo.seats.length > 1 ? 'Seats: ' : 'Seat: '}${
         bookingInfo.seats

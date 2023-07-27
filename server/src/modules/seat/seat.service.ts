@@ -36,22 +36,27 @@ export class SeatService {
   GetSeat(eventId: string) {
     return this.seatRepo
       .createQueryBuilder('seat')
-      .select(['seat.id', 'seat.status', 'seatType.name', 'seatType.price'])
+      .select([])
+      .addSelect('seat.id', 'id')
+      .addSelect('seat.name', 'name')
+      .addSelect('seat.status', 'status')
+      .addSelect('seatType.name', 'type')
+      .addSelect('seatType.price', 'price')
       .innerJoin('seat.event', 'event')
       .innerJoin('seat.seatType', 'seatType')
       .where('event.id=:id', { id: eventId })
-      .getMany();
+      .getRawMany();
   }
 
   async CheckBookingStatus(bookingInfo: BookingInfo) {
-    const { event, seats } = bookingInfo;
+    const { event, seatIds } = bookingInfo;
     const isBookedCounter = await this.seatRepo
       .createQueryBuilder('seat')
       .select('bookingId')
       .where(
-        'id IN (:...seats) AND (bookingId IS NOT NULL OR eventId != :event)',
+        'id IN (:...seatIds) AND (bookingId IS NOT NULL OR eventId != :event)',
         {
-          seats: [...seats],
+          seatIds: [...seatIds],
           event: event,
         },
       )
@@ -60,12 +65,14 @@ export class SeatService {
   }
 
   async UpdateBookingStatus(bookingInfo: BookingInfo, bookingId: string) {
-    const { seats } = bookingInfo;
-    await this.seatRepo
-      .createQueryBuilder()
-      .update('seat')
-      .set({ status: 'Booked', booking: bookingId })
-      .where('id IN (:...seats)', { seats: [...seats] })
-      .execute();
+    const { seats, seatIds } = bookingInfo;
+    for (let i = 0; i < seatIds.length; i++) {
+      await this.seatRepo
+        .createQueryBuilder()
+        .update('seat')
+        .set({ name: seats[i], status: 'Booked', booking: bookingId })
+        .where('id=:seatId', { seatId: seatIds[i] })
+        .execute();
+    }
   }
 }

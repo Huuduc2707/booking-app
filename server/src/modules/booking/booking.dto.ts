@@ -1,6 +1,8 @@
 import {
   ArrayNotEmpty,
   IsArray,
+  IsDate,
+  IsDateString,
   IsEmail,
   IsNotEmpty,
   IsNumber,
@@ -36,9 +38,23 @@ export default class BookingInfo {
   @IsString()
   readonly event: string;
 
+  @IsNotEmpty()
+  @IsString()
+  readonly eventName: string;
+
+  @IsNotEmpty()
+  @IsDateString()
+  readonly eventDate: string;
+
   @IsArray()
   @ArrayNotEmpty()
   @IsNotEmpty({ each: true })
   @IsString({ each: true })
   readonly seats: string[];
+
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsNotEmpty({ each: true })
+  @IsString({ each: true })
+  readonly seatIds: string[];
 }
