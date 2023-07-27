@@ -9,6 +9,7 @@ import {
   Max,
   Min,
   Validate,
+  IsUrl,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ArrayLengthValidator } from '../../utility';
@@ -47,7 +48,7 @@ export default class EventInfo {
   readonly location: string;
 
   @IsNotEmpty()
-  // @IsImage({ message: 'Invalid image file' })
+  @IsUrl()
   @IsString()
   readonly image: string;
 
