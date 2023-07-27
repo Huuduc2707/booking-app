@@ -15,6 +15,7 @@ import { SeatService } from './modules/seat/seat.service';
 import { BookingService } from './modules/booking/booking.service';
 import Event from './entities/event.entity/event.entity';
 import EventCategory from './entities/event-category.entity/event-category.entity';
+import Event_Eventcategory from './entities/event_eventCategory.entity';
 import Booking from './entities/booking.entity/booking.entity';
 import Seat from './entities/seat.entity/seat.entity';
 import SeatType from './entities/seat-type.entity/seat-type.entity';
@@ -24,7 +25,14 @@ import { EmailService } from './utility';
   imports: [
     TypeOrmModule.forRoot(TypeOrmConfig),
     TerminusModule,
-    TypeOrmModule.forFeature([Event, EventCategory, Booking, Seat, SeatType]),
+    TypeOrmModule.forFeature([
+      Event,
+      EventCategory,
+      Event_Eventcategory,
+      Booking,
+      Seat,
+      SeatType,
+    ]),
   ],
   controllers: [
     AppController,
