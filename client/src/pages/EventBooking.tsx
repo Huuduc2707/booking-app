@@ -78,7 +78,7 @@ const EventBooking = () => {
                 <div className={`border border-solid border-slate-500 w-[32px] h-[32px] color-code-${index}`} />
                 <div className='flex flex-col'>
                   <div className='font-semibold text-lg'>{item}</div>
-                  <div>{seatList?.find(ele => ele.seatType.name === item)?.seatType.price}</div>
+                  <div>{seatList?.find(ele => ele.seatType.name === item)?.seatType.price} VND</div>
                 </div>
                 <Icon className='w-[32px] h-[32px] text-zinc-500 absolute right-2' icon="mdi:information-variant-circle"/>
               </div>
@@ -335,9 +335,9 @@ const EventBooking = () => {
         open={open}
         onClose={() => {setOpen(false)}}
       >
-        <Box className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-[1000px] h-[650px] shadow-md bg-white flex p-10 border-solid border-black border-[1px] rounded-sm space-y-[3rem] overflow-scroll">
+        <Box className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-[1000px] h-[fit] shadow-md bg-white flex p-10 border-solid border-black border-[1px] rounded-sm space-y-[3rem] overflow-scroll">
             <form action="" className='px-4 w-1/2' onSubmit={() => {}}>
-              <Box className="flex flex-col py-8 px-6 gap-6 border border-solid border-slate-200">
+              <Box className="flex flex-col py-6 px-6 gap-6 border border-solid border-slate-200">
                 <div className='text-2xl font-semibold'>Fill your information</div>
                 <TextField name='fullName' variant='standard' placeholder='Full name'/>
                 <TextField name='phone' variant='standard' placeholder='Phone number'/>
@@ -385,7 +385,7 @@ const EventBooking = () => {
                   </>
                 ))}
               </div>
-              <div className='bg-[#666] text-slate-100 px-4 py-6 flex justify-between font-bold'>
+              <div className='bg-[#666] text-slate-100 px-4 py-8 flex justify-between font-bold'>
                 <div>Total</div>
                 <div>{isSelected?.reduce((total: number, currentValue) => {
                   return total + currentValue.seatInfo.seatType.price
