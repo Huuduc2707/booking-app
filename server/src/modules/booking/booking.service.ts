@@ -26,4 +26,18 @@ export class BookingService {
     await this.bookingRepo.save(booking);
     return bookingId;
   }
+
+  async GetBooking(email: string) {
+    return await this.bookingRepo
+      .createQueryBuilder('booking')
+      .select([])
+      .addSelect('booking.id', 'id')
+      .addSelect('booking.fullName', 'fullName')
+      .addSelect('booking.phone', 'phone')
+      .addSelect('booking.email', 'email')
+      .addSelect('booking.totalPayment', 'totalPayment')
+      .addSelect('booking.eventId', 'eventId')
+      .where('booking.email=:email', { email: email })
+      .getRawMany();
+  }
 }

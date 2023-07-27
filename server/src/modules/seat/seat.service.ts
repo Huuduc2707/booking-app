@@ -48,6 +48,21 @@ export class SeatService {
       .getRawMany();
   }
 
+  GetBookedSeat(bookId: string) {
+    return this.seatRepo
+      .createQueryBuilder('seat')
+      .select([])
+      .addSelect('seat.id', 'id')
+      .addSelect('seat.name', 'name')
+      .addSelect('seat.status', 'status')
+      .addSelect('seatType.name', 'type')
+      .addSelect('seatType.price', 'price')
+      .innerJoin('seat.booking', 'booking')
+      .innerJoin('seat.seatType', 'seatType')
+      .where('booking.id=:id', { id: bookId })
+      .getRawMany();
+  }
+
   async CheckBookingStatus(bookingInfo: BookingInfo) {
     const { event, seatIds } = bookingInfo;
     const isBookedCounter = await this.seatRepo
