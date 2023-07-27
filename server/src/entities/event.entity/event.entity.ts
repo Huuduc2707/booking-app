@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryColumn, ManyToMany, OneToMany } from 'typeorm';
-import EventCategory from '../event-category.entity/event-category.entity';
+import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
+import Event_Eventcategory from '../event_eventCategory.entity';
 import Booking from '../booking.entity/booking.entity';
 import Seat from '../seat.entity/seat.entity';
 import SeatType from '../seat-type.entity/seat-type.entity';
@@ -24,16 +24,26 @@ export default class Event {
   @Column()
   imageUrl: string;
 
-  @ManyToMany(() => EventCategory, (eventCategory) => eventCategory.events)
+  @OneToMany(
+    () => Event_Eventcategory,
+    (event_Category) => event_Category.event,
+  )
   eventCategories: string[];
 
-  @OneToMany(() => Booking, (booking) => booking.event, { onDelete: 'CASCADE' })
+  @OneToMany(() => Booking, (booking) => booking.event, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   bookings: string[];
 
-  @OneToMany(() => Seat, (seat) => seat.event, { onDelete: 'CASCADE' })
+  @OneToMany(() => Seat, (seat) => seat.event, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   seats: string[];
 
   @OneToMany(() => SeatType, (seatType) => seatType.event, {
+    cascade: true,
     onDelete: 'CASCADE',
   })
   seatTypes: string[];
