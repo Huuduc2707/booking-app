@@ -67,6 +67,7 @@ export class EmailService {
   }
 
   async sendEmail(bookingInfo: BookingInfo, bookingId: string): Promise<void> {
+    const date = new Date(bookingInfo.eventDate);
     await this.transporter.sendMail({
       from: EMAIL_CONFIG.EMAIL_USERNAME,
       to: bookingInfo.email,
@@ -77,7 +78,9 @@ export class EmailService {
       Customer name: ${bookingInfo.fullName},
       Phone number: ${bookingInfo.phone},
       Event: ${bookingInfo.eventName},
-      Date: ${bookingInfo.eventDate},
+      Date: ${date.getDay}/${
+        date.getMonth() + 1
+      }/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()},
       Total payment: ${bookingInfo.totalPayment},
       ${bookingInfo.seats.length > 1 ? 'Seats: ' : 'Seat: '}${
         bookingInfo.seats
