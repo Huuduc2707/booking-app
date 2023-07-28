@@ -78,7 +78,7 @@ export class EmailService {
       Customer name: ${bookingInfo.fullName},
       Phone number: ${bookingInfo.phone},
       Event: ${bookingInfo.eventName},
-      Date: ${date.getDay}/${
+      Date: ${date.getDate()}/${
         date.getMonth() + 1
       }/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()},
       Total payment: ${bookingInfo.totalPayment},
