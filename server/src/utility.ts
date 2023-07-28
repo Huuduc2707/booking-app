@@ -78,9 +78,13 @@ export class EmailService {
       Customer name: ${bookingInfo.fullName},
       Phone number: ${bookingInfo.phone},
       Event: ${bookingInfo.eventName},
-      Date: ${date.getDate()}/${
-        date.getMonth() + 1
-      }/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()},
+      Date: ${date.toLocaleString('en-NZ', {
+        dateStyle: 'full',
+      })} - ${date.toLocaleString('en-NZ', {
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+      })},
       Total payment: ${bookingInfo.totalPayment},
       ${bookingInfo.seats.length > 1 ? 'Seats: ' : 'Seat: '}${
         bookingInfo.seats
