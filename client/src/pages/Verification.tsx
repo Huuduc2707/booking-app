@@ -13,7 +13,7 @@ const Verification = () => {
   }
 
   useEffect(() => {
-    if (sessionStorage.getItem('email')) navigate("/home");
+    if (sessionStorage.getItem('email')) navigate("/");
   }, [])
 
   return (
@@ -22,11 +22,11 @@ const Verification = () => {
             <div className='absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-[430px] shadow-md bg-white flex flex-col p-10 border-solid border-black border-[1px] rounded-sm space-y-[3rem]'>
                 <div className='text-2xl font-bold text-center'>Enter your email</div>
                 <TextField name="email" variant='outlined' required onChange={(e) => setEmail(e.target.value)}/>
-                <Button type='submit' className='w-fit self-center' variant='contained' onClick={() => {
+                <Button type='submit' className='w-fit self-center' variant='contained' onClick={async () => {
                     if (validateEmail(email)){
                         sessionStorage.setItem("email", email);
                         setEmail("");
-                        navigate("/home");
+                        navigate(`/${email}/mybookings`);
                     } else {
                         openSnack(true);
                     }

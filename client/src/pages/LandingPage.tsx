@@ -10,13 +10,18 @@ const LandingPage = () => {
   const [eventList, setEventList] = useState<Event[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [filteredEventList, setFilteredEventList] = useState<Event[]>([]);
+  const [onReload, setReload] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [slicedEventList, setSlicedEventList] = useState<Event[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     getEventList();
-  }, [])
+  }, [onReload])
+
+  useEffect(() => {
+    setReload(true);
+  }, [onReload])
 
   useEffect(() => {
     setFilteredEventList(eventList.filter(event => (event.title.toLowerCase().includes(searchValue.toLowerCase()) || event.location.toLowerCase().includes(searchValue.toLowerCase()) || event.category?.some(item => item.name.toLowerCase().includes(searchValue.toLowerCase())))))

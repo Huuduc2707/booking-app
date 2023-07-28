@@ -1,14 +1,18 @@
 import React, {useState, useEffect, FormEvent} from 'react'
-import { Button, Box, Modal, TextField } from '@mui/material'
+import { Button, Box, Modal, TextField, Snackbar, Alert } from '@mui/material'
 import { Seat, Event } from '../interfaces'
 import { Icon } from '@iconify/react'
 import { useParams } from 'react-router-dom'
 
 const EventBooking = () => {
   const { id } = useParams();
+  const dummyDate = new Date();
 
   const [open, setOpen] = useState(false);
-  const [thisEvent, setThisEvent] = useState<Event>();
+  const [thisEvent, setThisEvent] = useState<Event>({ id: "", location: "", date: dummyDate, title: "", imageUrl: "", price: 0, bookingNum: "", revenue: 0, category: []  });
+  const [onReload, setReload] = useState(false);
+  const [dangerSnack, setDangerSnack] = useState(false);
+  const [bookingSnack, setBookingSnack] = useState(false);
   const [seatList, setSeatList] = useState<Seat[]>([{ id: '', status: '', type: '', name: '', price: 0 }]);
   const [seatTypes, setSeatTypes] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -20,20 +24,19 @@ const EventBooking = () => {
 
   useEffect(() => {
     getEventInfo();
-  }, [])
+  }, [onReload])
+
+  useEffect(() => {
+    setReload(false);
+  }, [onReload])
 
   async function getEventInfo() {
     const res = await fetch(`http://localhost:8000/event/detail/${id}`);
 
     const event = await res.json();
-    console.log(event)
     setThisEvent(event.event);
     setSeatList(event.seats);
   }
-
-  useEffect(() => {
-    console.log(seatTypes);
-  }, [seatTypes]);
 
   useEffect(() => {
     const seat_types = Array.from(new Set(seatList.map(item => item.type)));
@@ -43,12 +46,15 @@ const EventBooking = () => {
       const typeBIndex = seatTypes.indexOf(b.type);
 
       return typeAIndex - typeBIndex; 
+      // return a.price - b.price
     })
-    if (seatTypes) setIsLoading(false);
+    setIsLoading(false);
   }, [seatList])
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    
 
     const res = await fetch("http://localhost:8000/booking/add", {
         method: "PUT",
@@ -69,18 +75,29 @@ const EventBooking = () => {
             seats: (isSelected?.map(item => { return `S-${item.seatNumber}`})),
         })
     })
+
+
+    setIsSelected([]);
+    setBookingSnack(true);
+    setOpen(false);
+    window.location.reload();
   }
-  // useEffect(() => {
-  //   console.log(isSelected);
-  // }, [isSelected])
+  useEffect(() => {
+    console.log(seatList);
+  }, [seatList])
 
   return (
     <div className='bg-[#f1f1f1]'>
       <div className='event-info bg-gradient-to-r from-[#20212A] to-[#3B3251] text-white/80 py-4'>
         <div className='content-box w-2/3 my-0 mx-auto'>
-          <div className='text-3xl font-bold mb-8'>{thisEvent?.title}</div>
-          <div>{thisEvent?.location} | Cinema 5 | Available seats ({seatList?.filter(seat => seat.status.toLowerCase() === "available").length}/{seatList?.length})</div>
-          <div> 31/10/2017 | 22:10 PM  - 24:46 PM </div>
+          <div className='text-3xl font-bold mb-8'>{thisEvent?.title.toUpperCase()}</div>
+          <div>
+            <div>{thisEvent?.location}</div>
+            <div>Available seats ({seatList?.filter(seat => seat.status.toLowerCase() === "available").length}/{seatList?.length})</div>
+          </div>
+          {/* <div> {isDateLoading ? (<></>) : (<>
+            {thisEvent?.date.getDate()}/{thisEvent?.date.getMonth() + 1}/{thisEvent?.date.getFullYear()}
+          </>)} </div> */}
         </div>
       </div>
       <div className='main-container content-box w-2/3 my-0 mx-auto py-8 flex gap-8'>
@@ -106,7 +123,7 @@ const EventBooking = () => {
                 <div className={`border border-solid border-slate-500 w-[32px] h-[32px] color-code-${index}`} />
                 <div className='flex flex-col'>
                   <div className='font-semibold text-lg'>{item}</div>
-                  <div>{seatList?.find(ele => ele.type === item)?.price} VND</div>
+                  <div>{seatList?.find(ele => ele.type === item)?.price.toLocaleString()} VND</div>
                 </div>
                 <Icon className='w-[32px] h-[32px] text-zinc-500 absolute right-2' icon="mdi:information-variant-circle"/>
               </div>
@@ -118,6 +135,7 @@ const EventBooking = () => {
             <div className="seats flex flex-col">
               {isLoading ? (<><Icon icon="svg-spinners:270-ring" /></>) : (
                 <>
+                  {onReload && (<></>)}
                   {seatTypes.map(seatType => (
                     <>
                       <div className='flex flex-wrap px-7'>
@@ -191,7 +209,7 @@ const EventBooking = () => {
                     <div className='h-[1px] border border-slate-300 border-dashed my-4' />
                     <div className='text-black/50'>{item}</div>
                     <div className='flex justify-between text-black/50'>
-                      <div>{isSelected?.find(selectedItem => selectedItem.seatInfo.type === item)?.seatInfo.price} VND</div>
+                      <div>{isSelected?.find(selectedItem => selectedItem.seatInfo.type === item)?.seatInfo.price.toLocaleString()} VND</div>
                       <div>{isSelected?.filter(selectedItem => selectedItem.seatInfo.type === item).length}</div>
                     </div>
                     <div className='flex justify-between text-black/50'>
@@ -207,7 +225,7 @@ const EventBooking = () => {
                       <div className='text-black/50'>{isSelected?.reduce((total: number, currentValue) => {
                         if (currentValue.seatInfo.type === item) return total + currentValue.seatInfo.price;
                         return total
-                      }, 0)} VND</div>
+                      }, 0).toLocaleString()} VND</div>
                     </div>
                   </>
                 )}
@@ -218,9 +236,17 @@ const EventBooking = () => {
             <div>Total</div>
             <div>{isSelected?.reduce((total: number, currentValue) => {
               return total + currentValue.seatInfo.price
-            }, 0)} VND</div>
+            }, 0).toLocaleString()} VND</div>
           </div>
-          <Button className='bg-transparent !mt-8 w-full' variant='contained' onClick={() => {setOpen(true)}}>Book</Button>
+          <Button className='bg-transparent !mt-8 w-full' variant='contained' onClick={() => {
+            if (isSelected.length === 0) {
+              setDangerSnack(true);
+            } else {
+              setOpen(true)
+            }
+            
+
+          }}>Book</Button>
         </div>
       </div> 
       <Modal
@@ -254,7 +280,7 @@ const EventBooking = () => {
                         <div className='h-[1px] border border-slate-300 border-dashed my-4' />
                         <div className='text-black/50'>{item}</div>
                         <div className='flex justify-between text-black/50'>
-                          <div>{isSelected?.find(selectedItem => selectedItem.seatInfo.type === item)?.seatInfo.price} VND</div>
+                          <div>{isSelected?.find(selectedItem => selectedItem.seatInfo.type === item)?.seatInfo.price.toLocaleString()} VND</div>
                           <div>{isSelected?.filter(selectedItem => selectedItem.seatInfo.type === item).length}</div>
                         </div>
                         <div className='flex justify-between text-black/50'>
@@ -270,7 +296,7 @@ const EventBooking = () => {
                           <div className='text-black/50'>{isSelected?.reduce((total: number, currentValue) => {
                             if (currentValue.seatInfo.type === item) return total + currentValue.seatInfo.price;
                             return total
-                          }, 0)} VND</div>
+                          }, 0).toLocaleString()} VND</div>
                         </div>
                       </>
                     )}
@@ -281,12 +307,32 @@ const EventBooking = () => {
                 <div>Total</div>
                 <div>{isSelected?.reduce((total: number, currentValue) => {
                   return total + currentValue.seatInfo.price
-                }, 0)} VND</div>
+                }, 0).toLocaleString()} VND</div>
               </div>
             </div>
         </Box>
       </Modal>
       {isSelected && (<></>)}
+      <Snackbar
+        open={bookingSnack}
+        onClose={() => setBookingSnack(false)}
+        anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+        autoHideDuration={3000}
+      >
+        <Alert severity='success' variant='filled'>
+          Booking successful
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={dangerSnack}
+        onClose={() => setDangerSnack(false)}
+        anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+        autoHideDuration={3000}
+      >
+        <Alert severity='error' variant='filled'>
+          Please select seat
+        </Alert>
+      </Snackbar>
     </div>
   )
 }

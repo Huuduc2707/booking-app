@@ -5,10 +5,12 @@ import { Event } from '../interfaces'
 
 const EventCard: React.FC<Event> = ({ id, title, date, imageUrl, price, location, category, bookingNum, revenue }) => {
   const liveDate = new Date(date);
+  const formattedLocation = location.split(",");
+  // console.log(formattedLocation[formattedLocation.length - 1]);
 
   return (
     <>
-        <Card className='w-[50%] max-w-[600px] min-w-[400px]'>
+        <Card className='w-[50%] max-w-[600px] min-w-[400px] min-h-[340px]'>
           <CardMedia
             src={imageUrl} 
             className="img-container w-full h-[175px] !object-cover"
@@ -16,12 +18,12 @@ const EventCard: React.FC<Event> = ({ id, title, date, imageUrl, price, location
           />
           <CardContent className='flex flex-col gap-4'>
               <div className="event-title bg-white flex flex-col text-md font-bold">
-                {title}
+                {title.toUpperCase()}
               </div>
               <div className="event-description flex flex-wrap justify-between">
                 <div className="row-1">
                   <div className="event-price">
-                    From <span className='text-green-500 text-md font-bold'>{price} VND</span>
+                    From <span className='text-green-500 text-md font-bold'>{price.toLocaleString()} VND</span>
                     {/* From <span className='text-green-500 text-md font-bold'>{priceRange.reduce((minPrice, item) => {
                       if (item.price < minPrice.price) return item
                       else return minPrice
@@ -38,7 +40,7 @@ const EventCard: React.FC<Event> = ({ id, title, date, imageUrl, price, location
                   </span>
                   <div className="event-location border border-solid border-slate-300 flex items-center gap-1 w-fit px-2 self-end">
                     <Icon icon="material-symbols:location-on-rounded" className='text-slate-300'/>
-                    {location}
+                    {formattedLocation[formattedLocation.length - 1]}
                   </div>
                 </div>
               </div>
